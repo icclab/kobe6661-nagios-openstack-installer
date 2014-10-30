@@ -17,29 +17,47 @@ env.password = 'Ekbn1980!'
 env.key_filename = 'C:\\Users\\Konstantin\\.ssh\\id_rsa'
 print(env.key_filename)
 
+def nagios_downloaded():
+    return cuisine.file_exists("~/nagios-3.4.1.tar.gz")
 
 def nagios_plugins_downloaded():
     return cuisine.file_exists("~/nagios-plugins-2.0.3.tar.gz")
 
 @task
 def add_nagios_user():
+    cuisine.group_ensure('nagcmd')
     cuisine.group_ensure('nagios')
     cuisine.user_ensure('nagios',shell='which nologin')
     cuisine.group_user_ensure('nagios','nagios')
+    cuisine.group_user_ensure('nagcmd','nagios')
+    cuisine.user_ensure('www-data',shell='which nologin')
+    cuisine.group_user_ensure('nagcmd','www-data')
     cuisine.dir_ensure('/usr/local/nagios')
     cuisine.dir_ensure('/usr/local/nagios/libexec')
     sudo('chown nagios.nagios /usr/local/nagios')
     sudo('chown -R nagios.nagios /usr/local/nagios/libexec')
 
 @task
-def add_nrpe_port():
-    cuisine.package_ensure('xinetd')
-    sudo('echo "nrpe 5666/tcp" >> /etc/services')
+def install_prerequisites():
+    cuisine.package_ensure('apache2')
+    cuisine.package_ensure('libapache2-mod-php5')
+    cuisine.package_ensure('build-essential')
+    cuisine.package_ensure('libgd2-xpm-dev')
+    cuisine.package_ensure('libssl-dev')
 
 @task
-def install_nagios_plugins_from_source():
+def install_nagios_from_source():
     cuisine.dir_ensure('/usr/local/src')
     run('cd /usr/local/src')
+    if not nagios_downloaded():
+        sudo('wget http://prdownloads.sourceforge.net/sourceforge/nagios/nagios-3.4.1.tar.gz')
+    sudo('tar xzf nagios-3.4.1.tar.gz')
+    sudo('cd ~/nagios-3.4.1 && ./configure --with-command-group=nagcmd && make all && make install')
+    sudo('cd ~/nagios-3.4.1 && make install-init && make install-config && make install-commandmode')
+    sudo('cd ~/nagios-3.4.1 && make install-webconf')
+
+@task
+def install_nagios_plugins_from_source():    
     if not nagios_plugins_downloaded():
         sudo('wget http://nagios-plugins.org/download/nagios-plugins-2.0.3.tar.gz')
     sudo('tar xzf nagios-plugins-2.0.3.tar.gz')
@@ -68,8 +86,8 @@ def install_autoconf():
     
 
 execute(add_nagios_user)
-execute(add_nrpe_port)    
-execute(install_nagios_plugins_from_source)
+execute(install_prerequisites)    
+execute(install_nagios_from_source)
 execute(install_nrpe_plugin_from_source)
 execute(configure_xinetd_for_nrpe)
 execute(configure_nrpe)
