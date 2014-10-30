@@ -89,16 +89,6 @@ def start_nagios():
     put('./commands.cfg','/usr/local/nagios/etc/objects/command.cfg',use_sudo=True)
     sudo('ln -sf /etc/init.d/nagios /etc/rcS.d/S99nagios')
     sudo('/etc/init.d/nagios start')
-
-@task
-def configure_xinetd_for_nrpe():
-    sed('/etc/xinetd.d/nrpe','only_from       = 127.0.0.1','only_from       = 160.85.4.238,127.0.0.1',use_sudo=True)
-    sudo('service xinetd restart')
-
-@task
-def install_autoconf():
-    put('./remote.py','/usr/local/nagios/etc/remote.py',use_sudo=True)
-    put('./check_memory.sh','/usr/local/nagios/libexec/check_memory.sh',use_sudo=True)
     
 
 execute(add_nagios_user)
@@ -107,3 +97,4 @@ execute(install_nagios_from_source)
 execute(prepare_apache)
 execute(install_nrpe_plugin_from_source)
 execute(start_nagios)
+

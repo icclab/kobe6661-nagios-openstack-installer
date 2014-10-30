@@ -15,7 +15,9 @@ def add_file_to_nagios_conf_dir(**kwargs):
     _target_file=config_generator.write_config_file(FILE_DIR=FILE_DIR,
                                                     name=name,
                                                     ip=ip)
-    
+    #intermediate=open('~/intermediate.cfg','w')
+    #intermediate.write(str('\ncfg_file=%s' % _target_file))
+    #intermediate.close()    
     with open(str('%snagios.cfg' % NAGIOS_DIR),'a') as f:
         f.write(str('\ncfg_file=%s' % _target_file))
         
