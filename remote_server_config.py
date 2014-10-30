@@ -34,8 +34,8 @@ def add_nagios_user():
     cuisine.group_user_ensure('nagcmd','www-data')
     cuisine.dir_ensure('/usr/local/nagios')
     cuisine.dir_ensure('/usr/local/nagios/libexec')
-    sudo('chown nagios.nagios /usr/local/nagios')
-    sudo('chown -R nagios.nagios /usr/local/nagios/libexec')
+    sudo('chown nagios.nagcmd /usr/local/nagios')
+    sudo('chown -R nagios.nagcmd /usr/local/nagios/libexec')
 
 @task
 def install_prerequisites():
@@ -48,13 +48,24 @@ def install_prerequisites():
 @task
 def install_nagios_from_source():
     cuisine.dir_ensure('/usr/local/src')
+    sudo('mkdir -p /etc/httpd/conf.d/')
+    cuisine.dir_ensure('/etc/httpd/conf.d/')
     run('cd /usr/local/src')
     if not nagios_downloaded():
         sudo('wget http://prdownloads.sourceforge.net/sourceforge/nagios/nagios-3.4.1.tar.gz')
     sudo('tar xzf nagios-3.4.1.tar.gz')
-    sudo('cd ~/nagios-3.4.1 && ./configure --with-command-group=nagcmd && make all && make install')
-    sudo('cd ~/nagios-3.4.1 && make install-init && make install-config && make install-commandmode')
-    sudo('cd ~/nagios-3.4.1 && make install-webconf')
+    sudo('cd ~/nagios && ./configure --with-command-group=nagcmd && make all && make install')
+    sudo('cd ~/nagios && make install-init && make install-config && make install-commandmode')   
+    sudo('cd ~/nagios && make install-webconf')
+    sudo('cp /etc/httpd/conf.d/nagios.conf /etc/apache2/conf-available/nagios.conf')
+    sudo('cp /etc/httpd/conf.d/nagios.conf /etc/apache2/conf-enabled/nagios.conf')
+    sudo('rm -rf /etc/apache2/conf-available/nagios3.conf')
+    sudo('rm -rf /etc/apache2/conf-enabled/nagios3.conf')
+    
+@task
+def prepare_apache():
+    sudo('htpasswd -bc /usr/local/nagios/etc/htpasswd.users nagiosadmin nagiosadmin')
+    sudo('/etc/init.d/apache2 reload')
 
 @task
 def install_nagios_plugins_from_source():    
@@ -71,8 +82,13 @@ def install_nrpe_plugin_from_source():
     if not nagios_plugins_downloaded():
         sudo('wget http://sourceforge.net/projects/nagios/files/nrpe-2.x/nrpe-2.15/nrpe-2.15.tar.gz')
     sudo('tar xzf nrpe-2.15.tar.gz')
-    sudo('cd ~/nrpe-2.15 && ./configure --with-ssl=/usr/bin/openssl --with-ssl-lib=/usr/lib/x86_64-linux-gnu && make && make install')
-    sudo('cd ~/nrpe-2.15 && make install-xinetd install-daemon-config')
+    sudo('cd ~/nrpe-2.15 && ./configure --with-ssl=/usr/bin/openssl --with-ssl-lib=/usr/lib/x86_64-linux-gnu && make all && make install-plugin')
+
+@task
+def start_nagios():
+    put('./commands.cfg','/usr/local/nagios/etc/objects/command.cfg',use_sudo=True)
+    sudo('ln -sf /etc/init.d/nagios /etc/rcS.d/S99nagios')
+    sudo('/etc/init.d/nagios start')
 
 @task
 def configure_xinetd_for_nrpe():
@@ -81,13 +97,13 @@ def configure_xinetd_for_nrpe():
 
 @task
 def install_autoconf():
-    put('./remote.py','/usr/local/nagios/etc/nrpe.cfg',use_sudo=True)
+    put('./remote.py','/usr/local/nagios/etc/remote.py',use_sudo=True)
     put('./check_memory.sh','/usr/local/nagios/libexec/check_memory.sh',use_sudo=True)
     
 
 execute(add_nagios_user)
 execute(install_prerequisites)    
 execute(install_nagios_from_source)
+execute(prepare_apache)
 execute(install_nrpe_plugin_from_source)
-execute(configure_xinetd_for_nrpe)
-execute(configure_nrpe)
+execute(start_nagios)
