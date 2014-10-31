@@ -41,6 +41,7 @@ def install_files():
     put('./check_memory.sh','/usr/local/nagios/libexec/check_memory.sh',use_sudo=True)
     put('C:\\Users\\Konstantin\\.ssh\\id_rsa','/home/ubuntu/.ssh/id_rsa',use_sudo=True)
     put('C:\\Users\\Konstantin\\.ssh\\id_rsa','/home/ubuntu/.ssh/id_rsa',use_sudo=True)
+    sudo('chmod 0600 /home/ubuntu/.ssh/id_rsa')
     
 @task
 def update_configuration():

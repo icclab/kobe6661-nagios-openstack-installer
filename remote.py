@@ -11,7 +11,7 @@ from fabric.contrib.files import sed
 host_list = pickle.load(open('server_list','r'))
 
 #env.hosts = [host[2] for host in host_list if host[0] != u'nagios_test']
-env.hosts=['160.85.4.238']
+env.hosts = [host[2] for host in host_list if host[0] != u'nagios_test']
 env.user = 'ubuntu'
 env.password = 'Ekbn1980!'
 env.key_filename = '/home/ubuntu/.ssh/id_rsa'
@@ -24,8 +24,10 @@ def nagios_plugins_downloaded():
 @task
 def add_nagios_user():
     cuisine.group_ensure('nagios')
-    cuisine.user_ensure('nagios',shell='which nologin')
+    cuisine.user_ensure('nagios')
     cuisine.group_user_ensure('nagios','nagios')
+    sudo('mkdir -p /usr/local/nagios')
+    sudo('mkdir -p /usr/local/nagios/libexec')
     cuisine.dir_ensure('/usr/local/nagios')
     cuisine.dir_ensure('/usr/local/nagios/libexec')
     sudo('chown nagios.nagios /usr/local/nagios')
