@@ -21,6 +21,8 @@ print(env.key_filename)
 @task
 def install_prerequisites():
     cuisine.package_ensure('gcc')
+    cuisine.package_ensure('build-essential')
+    cuisine.package_ensure('libssl-dev')
 
 def nagios_plugins_downloaded():
     return cuisine.file_exists("~/nagios-plugins-2.0.3.tar.gz")
@@ -53,7 +55,6 @@ def install_nagios_plugins_from_source():
     
 @task
 def install_nrpe_plugin_from_source():
-    cuisine.package_ensure_apt('libssl-dev')
     cuisine.dir_ensure('/usr/local/src')
     run('cd /usr/local/src')
     if not nagios_plugins_downloaded():
