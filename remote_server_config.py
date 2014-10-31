@@ -91,7 +91,7 @@ def install_nrpe_plugin_from_source():
 
 @task
 def start_nagios():
-    put('./commands.cfg','/usr/local/nagios/etc/objects/command.cfg',use_sudo=True)
+    put('./commands.cfg','/usr/local/nagios/etc/objects/commands.cfg',use_sudo=True)
     sudo('ln -sf /etc/init.d/nagios /etc/rcS.d/S99nagios')
     sudo('/etc/init.d/nagios start')
     
