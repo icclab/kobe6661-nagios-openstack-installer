@@ -23,7 +23,9 @@ def write_intermediate_file(**kwargs):
     VM_DIR=kwargs.pop('VM_DIR','/usr/local/nagios/etc/objects/vm/')
     servers = pickle.load(open('server_list','r'))
     with open(str('%sintermediate.txt' % NAGIOS_DIR),'w') as f:
-        [f.write(str('\ncfg_file=%s%s_nagios.cfg' % (VM_DIR,server[0]))) for server in servers]
+        [f.write(str('\ncfg_file=%s%s_nagios.cfg' % (VM_DIR,server[0]))) 
+        for server in servers
+        if server[0] != u'nagios_test']
             
         
     

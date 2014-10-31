@@ -49,6 +49,7 @@ def update_configuration():
     sudo('python /usr/local/nagios/etc/vm_list_extractor.py')
     sudo('python /usr/local/nagios/etc/remote.py')
     sudo('python /usr/local/nagios/etc/nagios_config_updater.py')
+    sudo('service nagios restart')
 
 execute(install_prerequisites)
 execute(install_files)

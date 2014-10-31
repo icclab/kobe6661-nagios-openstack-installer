@@ -5,7 +5,7 @@ Created on Tue Oct 28 12:41:21 2014
 @author: Konstantin
 """
 import cuisine, pickle
-from fabric.api import env, execute, task, run, sudo, put
+from fabric.api import env, execute, task, run, sudo, put, local
 from fabric.contrib.files import sed
 
 host_list = pickle.load(open('server_list','r'))
@@ -79,7 +79,8 @@ def configure_nrpe():
     sudo('chown -R nagios.nagios /usr/local/nagios/etc')
     sudo('chown -R nagios.nagios /usr/local/nagios/etc/nrpe.cfg')
     put('/usr/local/nagios/libexec/check_memory.sh','/usr/local/nagios/libexec/check_memory.sh',use_sudo=True)
-    sudo('chown -R nagios.nagios /usr/local/nagios/libexec/check_memory.sh')    
+    sudo('chown -R nagios.nagios /usr/local/nagios/libexec/check_memory.sh')
+    sudo('chmod 0755 /usr/local/nagios/libexec/check_memory.sh')    
     
 execute(install_prerequisites)
 execute(add_nagios_user)
