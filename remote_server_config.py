@@ -22,6 +22,9 @@ def nagios_downloaded():
 
 def nagios_plugins_downloaded():
     return cuisine.file_exists("~/nagios-plugins-2.0.3.tar.gz")
+    
+def nrpe_plugins_downloaded():
+    return cuisine.file_exists("~/nrpe-2.15.tar.gz")
 
 @task
 def add_nagios_user():
@@ -81,7 +84,7 @@ def install_nrpe_plugin_from_source():
     cuisine.package_ensure_apt('libssl-dev')
     cuisine.dir_ensure('/usr/local/src')
     run('cd /usr/local/src')
-    if not nagios_plugins_downloaded():
+    if not nrpe_plugins_downloaded():
         sudo('wget http://sourceforge.net/projects/nagios/files/nrpe-2.x/nrpe-2.15/nrpe-2.15.tar.gz')
     sudo('tar xzf nrpe-2.15.tar.gz')
     sudo('cd ~/nrpe-2.15 && ./configure --with-ssl=/usr/bin/openssl --with-ssl-lib=/usr/lib/x86_64-linux-gnu && make all && make install-plugin')

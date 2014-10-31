@@ -23,9 +23,13 @@ def install_prerequisites():
     cuisine.package_ensure('gcc')
     cuisine.package_ensure('build-essential')
     cuisine.package_ensure('libssl-dev')
+    cuisine.package_ensure('iptables-persistent')
 
 def nagios_plugins_downloaded():
     return cuisine.file_exists("~/nagios-plugins-2.0.3.tar.gz")
+
+def nrpe_plugins_downloaded():
+    return cuisine.file_exists("~/nrpe-2.15.tar.gz")
 
 @task
 def add_nagios_user():
@@ -43,6 +47,7 @@ def add_nagios_user():
 def add_nrpe_port():
     cuisine.package_ensure('xinetd')
     sudo('echo "nrpe 5666/tcp" >> /etc/services')
+    sudo('iptables -A INPUT -p tcp --dport 5666 -j ACCEPT')
 
 @task
 def install_nagios_plugins_from_source():
@@ -57,15 +62,15 @@ def install_nagios_plugins_from_source():
 def install_nrpe_plugin_from_source():
     cuisine.dir_ensure('/usr/local/src')
     run('cd /usr/local/src')
-    if not nagios_plugins_downloaded():
+    if not nrpe_plugins_downloaded():
         sudo('wget http://sourceforge.net/projects/nagios/files/nrpe-2.x/nrpe-2.15/nrpe-2.15.tar.gz')
     sudo('tar xzf nrpe-2.15.tar.gz')
-    sudo('cd ~/nrpe-2.15 && ./configure --with-ssl=/usr/bin/openssl --with-ssl-lib=/usr/lib/x86_64-linux-gnu && make && make install')
-    sudo('cd ~/nrpe-2.15 && make install-xinetd install-daemon-config')
+    sudo('cd ~/nrpe-2.15 && ./configure --with-ssl=/usr/bin/openssl --with-ssl-lib=/usr/lib/x86_64-linux-gnu && make all && make install-plugin')
+    sudo('cd ~/nrpe-2.15 && make install-daemon && make install-daemon-config && make install-xinetd')
 
 @task
 def configure_xinetd_for_nrpe():
-    sed('/etc/xinetd.d/nrpe','only_from       = 127.0.0.1','only_from       = 160.85.4.238,127.0.0.1',use_sudo=True)
+    sed('/etc/xinetd.d/nrpe','only_from       = 127.0.0.1','only_from       = 160.85.4.238 10.10.2.56 127.0.0.1',use_sudo=True)
     sudo('service xinetd restart')
 
 @task
