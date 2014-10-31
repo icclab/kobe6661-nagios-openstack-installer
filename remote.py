@@ -18,6 +18,10 @@ env.key_filename = '/home/ubuntu/.ssh/id_rsa'
 print(env.key_filename)
 
 
+@task
+def install_prerequisites():
+    cuisine.package_ensure('gcc')
+
 def nagios_plugins_downloaded():
     return cuisine.file_exists("~/nagios-plugins-2.0.3.tar.gz")
 
@@ -68,7 +72,7 @@ def configure_nrpe():
     put('/usr/local/nagios/etc/nrpe.cfg','/usr/local/nagios/etc/nrpe.cfg',use_sudo=True)
     put('/usr/local/nagios/libexec/check_memory.sh','/usr/local/nagios/libexec/check_memory.sh',use_sudo=True)
     
-
+execute(install_prerequisites)
 execute(add_nagios_user)
 execute(add_nrpe_port)    
 execute(install_nagios_plugins_from_source)
