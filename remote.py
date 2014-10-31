@@ -76,7 +76,10 @@ def configure_xinetd_for_nrpe():
 @task
 def configure_nrpe():
     put('/usr/local/nagios/etc/nrpe.cfg','/usr/local/nagios/etc/nrpe.cfg',use_sudo=True)
+    sudo('chown -R nagios.nagios /usr/local/nagios/etc')
+    sudo('chown -R nagios.nagios /usr/local/nagios/etc/nrpe.cfg')
     put('/usr/local/nagios/libexec/check_memory.sh','/usr/local/nagios/libexec/check_memory.sh',use_sudo=True)
+    sudo('chown -R nagios.nagios /usr/local/nagios/libexec/check_memory.sh')    
     
 execute(install_prerequisites)
 execute(add_nagios_user)
