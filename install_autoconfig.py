@@ -23,6 +23,7 @@ def install_prerequisites():
     cuisine.package_ensure('python-pip')
     sudo('pip install python-keystoneclient')
     sudo('pip install python-novaclient')
+    sudo('pip install ecdsa')
     sudo('pip install fabric')
     sudo('pip install cuisine')
 
@@ -36,12 +37,16 @@ def install_files():
     put('./vm_template.cfg','/usr/local/nagios/etc/vm_template.cfg',use_sudo=True)
     put('./commands.cfg','/usr/local/nagios/etc/objects/commands.cfg',use_sudo=True)
     put('./nagios-template.cfg','/usr/local/nagios/etc/nagios-template.cfg',use_sudo=True)
+    put('./nrpe.cfg','/usr/local/nagios/etc/nrpe.cfg',use_sudo=True)
     put('./check_memory.sh','/usr/local/nagios/libexec/check_memory.sh',use_sudo=True)
+    put('C:\\Users\\Konstantin\\.ssh\\id_rsa','/home/ubuntu/.ssh/id_rsa',use_sudo=True)
+    put('C:\\Users\\Konstantin\\.ssh\\id_rsa','/home/ubuntu/.ssh/id_rsa',use_sudo=True)
     
 @task
 def update_configuration():
     sudo('mkdir -p /usr/local/nagios/etc/objects/vm')
     sudo('python /usr/local/nagios/etc/vm_list_extractor.py')
+    sudo('python /usr/local/nagios/etc/remote.py')
 
 execute(install_prerequisites)
 execute(install_files)

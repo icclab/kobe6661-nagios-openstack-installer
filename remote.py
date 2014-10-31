@@ -14,7 +14,7 @@ host_list = pickle.load(open('server_list','r'))
 env.hosts=['160.85.4.238']
 env.user = 'ubuntu'
 env.password = 'Ekbn1980!'
-env.key_filename = 'C:\\Users\\Konstantin\\.ssh\\id_rsa'
+env.key_filename = '/home/ubuntu/.ssh/id_rsa'
 print(env.key_filename)
 
 
@@ -63,8 +63,8 @@ def configure_xinetd_for_nrpe():
 
 @task
 def configure_nrpe():
-    put('./nrpe.cfg','/usr/local/nagios/etc/nrpe.cfg',use_sudo=True)
-    put('./check_memory.sh','/usr/local/nagios/libexec/check_memory.sh',use_sudo=True)
+    put('/usr/local/nagios/etc/nrpe.cfg','/usr/local/nagios/etc/nrpe.cfg',use_sudo=True)
+    put('/usr/local/nagios/libexec/check_memory.sh','/usr/local/nagios/libexec/check_memory.sh',use_sudo=True)
     
 
 execute(add_nagios_user)
