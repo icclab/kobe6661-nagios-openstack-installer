@@ -10,10 +10,10 @@ from string import Template as _template
 
 
 def write_config_file(**kwargs):
-    FILE_DIR=kwargs.pop('FILE_DIR','')
+    FILE_DIR=kwargs.pop('FILE_DIR','/usr/local/nagios/etc/')
     TEMPLATE_DIR=kwargs.pop('TEMPLATE_DIR','/usr/local/nagios/etc/')
-    target_config_file = open(str('%s/nagios.cfg' % FILE_DIR),'w')
-    template_file_name=str('%s/nagios-template.cfg' % TEMPLATE_DIR)
+    target_config_file = open(str('%snagios.cfg' % FILE_DIR),'w')
+    template_file_name=str('%snagios-template.cfg' % TEMPLATE_DIR)
     with open(template_file_name,'r') as f:
         for line in f:
             if re.search('nagios_config_files',line):

@@ -48,6 +48,7 @@ def update_configuration():
     sudo('mkdir -p /usr/local/nagios/etc/objects/vm')
     sudo('python /usr/local/nagios/etc/vm_list_extractor.py')
     sudo('python /usr/local/nagios/etc/remote.py')
+    sudo('python /usr/local/nagios/etc/nagios_config_updater.py')
 
 execute(install_prerequisites)
 execute(install_files)
