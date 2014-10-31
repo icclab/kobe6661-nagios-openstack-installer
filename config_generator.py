@@ -11,10 +11,11 @@ from string import Template as _template
 
 def write_config_file(**kwargs):
     FILE_DIR=kwargs.pop('FILE_DIR','')
+    TEMPLATE_DIR=kwargs.pop('TEMPLATE_DIR','/usr/local/nagios/etc')
     name=kwargs.pop('name','def')
     ip=kwargs.pop('ip','1.1.1.1')
     target_config_file = open(str('%s%s_nagios.cfg' % (FILE_DIR,name)),'w')
-    template_file_name=str('%s/vm_template.cfg' % os.curdir)
+    template_file_name=str('%s/vm_template.cfg' % TEMPLATE_DIR)
     with open(template_file_name,'r') as f:
         for line in f:
             if re.search('vm_name',line):

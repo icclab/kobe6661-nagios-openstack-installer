@@ -237,8 +237,7 @@ define command{
 	command_line	/usr/bin/printf "%b" "$LASTSERVICECHECK$\t$HOSTNAME$\t$SERVICEDESC$\t$SERVICESTATE$\t$SERVICEATTEMPT$\t$SERVICESTATETYPE$\t$SERVICEEXECUTIONTIME$\t$SERVICELATENCY$\t$SERVICEOUTPUT$\t$SERVICEPERFDATA$\n" >> /usr/local/nagios/var/service-perfdata.out
 	}
 
-# 'check_nrpe' command definition
-define command { 
+ command { 
 	command_name	check_nrpe
 	command_line	$USER1$/check_nrpe -H $HOSTADDRESS$ -C $ARG1$
 	}

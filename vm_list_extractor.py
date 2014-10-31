@@ -37,9 +37,9 @@ print(servers)
 
 nagios_server=novaconn.servers.find(name='nagios_test')
 
-[config_transporter.add_file_to_nagios_conf_dir(NAGIOS_DIR='',
-                                FILE_DIR='./vm/',
-                                name=server[0],
+[config_transporter.add_file_to_nagios_conf_dir(name=server[0],
                                 ip=server[2]) for server in servers]
 
 pickle.dump(servers,open('server_list','w'))
+
+config_transporter.write_intermediate_file()

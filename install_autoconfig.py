@@ -32,11 +32,15 @@ def install_files():
     put('./config_generator.py','/usr/local/nagios/etc/config_generator.py',use_sudo=True)
     put('./config_transporter.py','/usr/local/nagios/etc/config_transporter.py',use_sudo=True)
     put('./vm_list_extractor.py','/usr/local/nagios/etc/vm_list_extractor.py',use_sudo=True)
+    put('./nagios_config_updater.py','/usr/local/nagios/etc/nagios_config_updater.py',use_sudo=True)
     put('./vm_template.cfg','/usr/local/nagios/etc/vm_template.cfg',use_sudo=True)
+    put('./commands.cfg','/usr/local/nagios/etc/objects/commands.cfg',use_sudo=True)
+    put('./nagios-template.cfg','/usr/local/nagios/etc/nagios-template.cfg',use_sudo=True)
     put('./check_memory.sh','/usr/local/nagios/libexec/check_memory.sh',use_sudo=True)
     
 @task
 def update_configuration():
+    sudo('mkdir -p /usr/local/nagios/etc/objects/vm')
     sudo('python /usr/local/nagios/etc/vm_list_extractor.py')
 
 execute(install_prerequisites)
