@@ -5,11 +5,24 @@ Created on Tue Oct 28 10:00:29 2014
 @author: Konstantin
 """
 
-import re, os
+import re
 from string import Template as _template
 
 
 def write_config_file(**kwargs):
+    '''
+    Writes a single Nagios config file that represents a VM 
+    in the /etc/ directory of the Nagios VM. It uses a template 
+    for creating the config file.
+    
+    Arguments:
+    FILE_DIR -- local directory on Nagios server 
+    where the VM config resides.
+    TEMPLATE_DIR -- local directory on Nagios server 
+    where the template resides.
+    name -- name of the VM that is configured.
+    ip -- IP of the VM that is configured.
+    '''
     FILE_DIR=kwargs.pop('FILE_DIR','')
     TEMPLATE_DIR=kwargs.pop('TEMPLATE_DIR','/usr/local/nagios/etc')
     name=kwargs.pop('name','def')
@@ -30,5 +43,6 @@ def write_config_file(**kwargs):
     return target_config_file.name
     
 if __name__ == "__main__":
-    _target_config_file_name = write_config_file(name='test',ip='192.168.0.2')
-    print(_target_config_file_name)
+    help(write_config_file)
+    #_target_config_file_name = write_config_file(name='test',ip='192.168.0.2')
+    #print(_target_config_file_name)
