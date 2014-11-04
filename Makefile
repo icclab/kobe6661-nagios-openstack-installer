@@ -86,17 +86,17 @@ qthelp:
 	@echo
 	@echo "Build finished; now you can run "qcollectiongenerator" with the" \
 	      ".qhcp project file in $(BUILDDIR)/qthelp, like this:"
-	@echo "# qcollectiongenerator $(BUILDDIR)/qthelp/nagios_openstack_installer.qhcp"
+	@echo "# qcollectiongenerator $(BUILDDIR)/qthelp/NagiosOpenStackInstaller.qhcp"
 	@echo "To view the help file:"
-	@echo "# assistant -collectionFile $(BUILDDIR)/qthelp/nagios_openstack_installer.qhc"
+	@echo "# assistant -collectionFile $(BUILDDIR)/qthelp/NagiosOpenStackInstaller.qhc"
 
 devhelp:
 	$(SPHINXBUILD) -b devhelp $(ALLSPHINXOPTS) $(BUILDDIR)/devhelp
 	@echo
 	@echo "Build finished."
 	@echo "To view the help file:"
-	@echo "# mkdir -p $$HOME/.local/share/devhelp/nagios_openstack_installer"
-	@echo "# ln -s $(BUILDDIR)/devhelp $$HOME/.local/share/devhelp/nagios_openstack_installer"
+	@echo "# mkdir -p $$HOME/.local/share/devhelp/NagiosOpenStackInstaller"
+	@echo "# ln -s $(BUILDDIR)/devhelp $$HOME/.local/share/devhelp/NagiosOpenStackInstaller"
 	@echo "# devhelp"
 
 epub:
