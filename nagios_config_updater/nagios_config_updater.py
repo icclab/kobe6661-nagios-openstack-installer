@@ -7,7 +7,7 @@ Created on Tue Oct 28 10:00:29 2014
 
 import re
 from string import Template as _template
-import config_transporter
+import pickle, config_transporter
 
 def write_config_file(**kwargs):
     '''
@@ -32,8 +32,21 @@ def write_config_file(**kwargs):
                 target_config_file.write(buf)
     target_config_file.close()
     return target_config_file.name
+
+def write_config_files(**kwargs):
+    '''
+    Writes list of VMs to be monitored to text file.
+    '''
+    vm_dir = kwargs.pop('vm_dir', '/usr/local/nagios/etc/objects/vm/')
+    servers = pickle.load(open('/usr/local/nagios/etc/server_list', 'r'))
+    [config_transporter.add_file_to_nagios_conf_dir(file_dir=vm_dir, 
+                                                    name=server[0],
+                                                    vm_ip=server[2]) 
+         for server in servers
+         if server[0] != u'nagios_test']
     
 if __name__ == "__main__":
     config_transporter.write_intermediate_file()
+    write_config_files()
     _TARGET_CONFIG_FILE_NAME = write_config_file()
     print(_TARGET_CONFIG_FILE_NAME)
