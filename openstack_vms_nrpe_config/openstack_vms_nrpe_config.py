@@ -11,7 +11,7 @@ from fabric.contrib.files import sed
 config = configparser.ConfigParser()
 config.read('/usr/local/nagios/config.ini')
 
-HOST_LIST = pickle.load(open('server_list', 'r'))
+HOST_LIST = pickle.load(open('/usr/local/nagios/etc/server_list', 'r'))
 
 nagios_server = dict(config['NAGIOS_SERVER'])
 nagios_server_name = str(nagios_server['nagios_server.name'])

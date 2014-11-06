@@ -59,4 +59,4 @@ NAGIOS_SERVER = NOVA_CONN.servers.find(name='nagios_test')
 #                                                   ip=server[2])
 #    for server in SERVERS]
 
-pickle.dump(SERVERS, open('server_list', 'w'))
+pickle.dump(SERVERS, open('/usr/local/nagios/etc/server_list', 'w'))
