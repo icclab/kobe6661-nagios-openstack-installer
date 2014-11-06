@@ -1,0 +1,1 @@
+from nagios_config_updater import config_transporter 

@@ -4,17 +4,28 @@ Created on Tue Oct 28 12:41:21 2014
 
 @author: Konstantin
 """
-import cuisine, pickle
+import cuisine, configparser
 from fabric.api import env, execute, task, run, sudo, put
 #from fabric.contrib.files import sed
 
-HOST_LIST = pickle.load(open('server_list', 'r'))
+# HOST_LIST = pickle.load(open('server_list', 'r'))
+config = configparser.ConfigParser()
+config.read('../config.ini')
 
-#env.hosts = [host[2] for host in host_list if host[0] != u'nagios_test']
-env.hosts = ['160.85.4.238']
-env.user = 'ubuntu'
-env.password = 'Ekbn1980!'
-env.key_filename = 'C:\\Users\\Konstantin\\.ssh\\id_rsa'
+nagios_server = dict(config['NAGIOS_SERVER'])
+nagios_server_ip = str(nagios_server['nagios_server.ip'])
+nagios_server_user = str(nagios_server['nagios_server.user'])
+nagios_server_password = str(nagios_server['nagios_server.user'])
+
+ssh_credentials = dict(config['SSH_CREDENTIALS'])
+ssh_user = str(ssh_credentials['nagios_ssh.user'])
+ssh_password = str(ssh_credentials['nagios_ssh.password'])
+ssh_key_filename = str(ssh_credentials['nagios_ssh.key_filename'])
+
+env.hosts = [nagios_server_ip]
+env.user = ssh_user
+env.password = ssh_password
+env.key_filename = ssh_key_filename
 print(env.key_filename)
 
 def nagios_downloaded():
@@ -90,7 +101,7 @@ def prepare_apache():
     '''
     Creates Nagios admin user and configures Apache.
     '''
-    sudo('htpasswd -bc /usr/local/nagios/etc/htpasswd.users nagiosadmin nagiosadmin')
+    sudo(str('htpasswd -bc /usr/local/nagios/etc/htpasswd.users %s %s'% (nagios_server_user, nagios_server_password)))
     sudo('/etc/init.d/apache2 reload')
 
 @task

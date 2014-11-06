@@ -7,7 +7,7 @@ Created on Tue Oct 28 10:00:29 2014
 
 import re
 from string import Template as _template
-
+import config_transporter
 
 def write_config_file(**kwargs):
     '''
@@ -34,5 +34,6 @@ def write_config_file(**kwargs):
     return target_config_file.name
     
 if __name__ == "__main__":
+    config_transporter.write_intermediate_file()
     _TARGET_CONFIG_FILE_NAME = write_config_file()
     print(_TARGET_CONFIG_FILE_NAME)
